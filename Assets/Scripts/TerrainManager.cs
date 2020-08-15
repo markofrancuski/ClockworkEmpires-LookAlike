@@ -50,8 +50,6 @@ public class TerrainManager : MonoBehaviour
 
     }
 
-    public Mesh GetMesh() => _mesh;
-
     private void CreateShape()
     {
         _vertices = new Vector3[(_xSize + 1) * (_zSize + 1)];
@@ -111,22 +109,22 @@ public class TerrainManager : MonoBehaviour
         _mesh.triangles = _triangles;
     }
 
-    public (Vector3, int) GetVerticeInfo(Vector3 point)
+    private int GetVerticeIndex(Vector3 point)
     {
-        Vector3 vertice = Vector3.zero;
         int index = 0;
-
-        //Debug.Log(point);
         // Find Index
         index = ((point.x +  point.x != 0 ? 1 : 0 ) *  _zSize) + (int) point.z;
-        //Debug.Log(index);
-        return (vertice, index);
-
+        return index;
     } 
 
-    public void UpdateVerticeHeight(int index, float toHeight)
+    public void UpdateVerticeHeight(Vector3 point, float toHeight)
     {
+        // Get Index from the
+        int index = GetVerticeIndex(point);
 
+        _vertices[index].y = toHeight;
+
+        UpdateMesh();
         // TODO: Start Coroutiune to see if there are more vertices gonna be update in mean time if they do, batch them together ( call update mesh once instead of few times for each update).
     }
 
