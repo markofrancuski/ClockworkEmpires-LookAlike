@@ -12,19 +12,16 @@ public class CameraController : MonoBehaviour
 
     [Header("Camera Movement")]
     [SerializeField] private float _moveSpeed;
-    [SerializeField] private float _tempMoveSpeed;
+    private float _tempMoveSpeed;
     [SerializeField] private float _moveTimer;
     [Space]
-    [SerializeField] private float _tempMoveTimer;
-
+    private float _tempMoveTimer;
 
     [Header("Camera Zoom")]
     [SerializeField] private float _currentZoom;
     [SerializeField] private float _minZoom;
     [SerializeField] private float _maxZoom;
-    [SerializeField] private float _zoomStep;
-
-    private Vector3 _clickMousePosition;
+    private float _zoomStep;
 
     // Start is called before the first frame update
     void Start()
@@ -67,24 +64,23 @@ public class CameraController : MonoBehaviour
     {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
-        float speedBonus = 0;
-        Vector3 velocity = new Vector3(horizontal, 0, vertical).normalized;
         if (horizontal == 0 && vertical == 0)
         {
-            velocity = Vector3.zero;
+            _rigidbody.velocity = Vector3.zero;
             _tempMoveTimer = 0;
+            return;
         }
-        else
-        {
-            if (_tempMoveTimer < _moveTimer) _tempMoveTimer += Time.deltaTime;
-            else _tempMoveTimer = _moveTimer;
 
-            // Percentage
-            speedBonus = ((_tempMoveTimer * 100) / _moveTimer) / 100;
-        }
+        float speedBonus = 0;
+        Vector3 velocity = new Vector3(horizontal, 0, vertical).normalized;
+
+        if (_tempMoveTimer < _moveTimer) _tempMoveTimer += Time.deltaTime;
+        else _tempMoveTimer = _moveTimer;
+
+        speedBonus = ((_tempMoveTimer * 100) / _moveTimer) / 100;
+  
 
         _tempMoveSpeed = _moveSpeed + (_moveSpeed * speedBonus);
-
         _rigidbody.velocity = velocity * _tempMoveSpeed;
 
     }
